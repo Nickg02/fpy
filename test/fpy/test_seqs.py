@@ -2814,6 +2814,15 @@ assert fabs(0.0) == 0.0
     assert_run_success(fprime_test_api, seq)
 
 
+def test_rng(fprime_test_api):
+    seq = """
+value: U32 = rng()
+assert value == 1
+"""
+
+    assert_run_success(fprime_test_api, seq)
+
+
 def test_abs_i64(fprime_test_api):
     seq = """
 assert iabs(I64(-1)) == 1
