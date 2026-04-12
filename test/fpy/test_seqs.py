@@ -2823,6 +2823,15 @@ assert value == 1
     assert_run_success(fprime_test_api, seq)
 
 
+def test_set_seed(fprime_test_api):
+    seq = """
+set_seed(123)
+assert rng() == 1
+"""
+
+    assert_run_success(fprime_test_api, seq)
+
+
 def test_abs_i64(fprime_test_api):
     seq = """
 assert iabs(I64(-1)) == 1

@@ -145,7 +145,8 @@ class DirectiveId(Enum):
     LOAD_ABS = 74
     STORE_ABS = 75
     STORE_ABS_CONST_OFFSET = 76
-    PUSH_RAND = 77
+    SET_SEED = 77
+    PUSH_RAND = 78
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -666,6 +667,11 @@ class PushTimeDirective(Directive):
 @dataclass
 class PushRandDirective(Directive):
     opcode: ClassVar[DirectiveId] = DirectiveId.PUSH_RAND
+
+
+@dataclass
+class SetSeedDirective(Directive):
+    opcode: ClassVar[DirectiveId] = DirectiveId.SET_SEED
 
 @dataclass
 class SetFlagDirective(Directive):

@@ -38,6 +38,7 @@ from fpy.bytecode.directives import (
     StackCmdDirective,
     PushPrmDirective,
     PushTlmValDirective,
+    SetSeedDirective,
     IfDirective,
     IntAddDirective,
     IntEqualDirective,
@@ -153,6 +154,7 @@ class FpySequencerModel:
         self.time_context = time_context
         self.initial_time_us = initial_time_us
         self.simulated_time_us = initial_time_us
+        self.rng_seed = 0
 
         # Flags: indexed boolean array, initialized to defaults
         # Index 0 = EXIT_ON_CMD_FAIL (default: False)
@@ -188,6 +190,7 @@ class FpySequencerModel:
         self.tlm_db: dict[int, bytearray] = {}
         self.prm_db: dict[int, bytearray] = {}
         self.simulated_time_us = self.initial_time_us
+        self.rng_seed = 0
         self.flags = [False] * self.NUM_FLAGS
 
     def dispatch(self, dir: Directive) -> DirectiveErrorCode:
@@ -1078,6 +1081,13 @@ class FpySequencerModel:
             return DirectiveErrorCode.STACK_OVERFLOW
 
         self.push(FpyValue(U32, 1).serialize())
+        return None
+
+    def handle_set_seed(self, dir: SetSeedDirective):
+        if len(self.stack) < U32.max_size:
+            return DirectiveErrorCode.STACK_ACCESS_OUT_OF_BOUNDS
+
+        self.rng_seed = self.pop(type=int, size=U32.max_size, signed=False)
         return None
 
     def handle_set_flag(self, dir: SetFlagDirective):
