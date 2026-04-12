@@ -2814,6 +2814,7 @@ assert fabs(0.0) == 0.0
     assert_run_success(fprime_test_api, seq)
 
 
+@pytest.mark.skipif("config.getoption('--use-gds')", reason="local stub expectation only")
 def test_rng(fprime_test_api):
     seq = """
 value: U32 = rng()
@@ -2823,6 +2824,7 @@ assert value == 1
     assert_run_success(fprime_test_api, seq)
 
 
+@pytest.mark.skipif("config.getoption('--use-gds')", reason="local stub expectation only")
 def test_set_seed(fprime_test_api):
     seq = """
 set_seed(123)
@@ -2836,10 +2838,21 @@ assert rng() == 1
 def test_rng_seeded_sequence_gds(fprime_test_api):
     seq = """
 set_seed(123456789)
-assert rng() == 184
-assert rng() == 156
+assert rng() == 2288500408
+assert rng() == 4254805660
 set_seed(123456789)
-assert rng() == 184
+assert rng() == 2288500408
+"""
+
+    assert_run_success(fprime_test_api, seq)
+
+
+@pytest.mark.skipif("not config.getoption('--use-gds')", reason="requires live GDS RNG implementation")
+def test_set_seed_overrides_time_initialized_rng_gds(fprime_test_api):
+    seq = """
+ignored: U32 = rng()
+set_seed(123456789)
+assert rng() == 2288500408
 """
 
     assert_run_success(fprime_test_api, seq)
